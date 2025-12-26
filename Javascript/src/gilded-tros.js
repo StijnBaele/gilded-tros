@@ -1,9 +1,60 @@
+class NormalItem {
+  updateQuality(item) {
+    item.sellIn--;
+    let degrade = item.sellIn < 0 ? 2 : 1;
+    if (item.quality > 0) item.quality -= degrade;
+  }
+}
+
+class GoodWineItem {
+  updateQuality(item) {
+    item.sellIn--;
+    let increase = item.sellIn < 0 ? 2 : 1;
+    if (item.quality < 50) item.quality += increase;
+  }
+}
+
+class BackstagePassesItem {
+  updateQuality(item) {
+    item.sellIn--;
+    if (item.sellIn < 0) {
+      item.quality = 0;
+    }
+    else {
+      if (item.quality < 50) item.quality++;
+      if (item.sellIn < 10 && item.quality < 50) item.quality++;
+      if (item.sellIn < 5 && item.quality < 50) item.quality++;
+    }
+  }
+}
+
+class LegendaryItem {
+  updateQuality(item) {
+    item.quality = 80;
+  }
+}
+
+const ITEMS_CATEGORIES = {
+  'Good Wine': new GoodWineItem(),
+  'Backstage passes for Re:Factor': new BackstagePassesItem(),
+  'Backstage passes for HAXX': new BackstagePassesItem(),
+  'B-DAWG Keychain': new LegendaryItem(),
+};
+
 export class GildedTros {
   constructor(items) {
     this.items = items;
   }
 
   updateQuality() {
+    this.items.forEach(item => {
+      const category = ITEMS_CATEGORIES[item.name] || new NormalItem();
+      category.updateQuality(item);
+    });
+  }
+
+  /* 
+   updateQuality() {
     for (let i = 0; i < this.items.length; i++) {
 
        // Decrease quality for normal items
@@ -76,5 +127,6 @@ export class GildedTros {
         }
       }
     }
-  }
+  }*/
+
 }

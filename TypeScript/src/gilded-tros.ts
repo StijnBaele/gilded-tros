@@ -1,4 +1,51 @@
-import {Item} from './item';
+import { Item } from './item';
+
+interface ItemBehavior {
+    updateQuality(item: Item): void;
+}
+
+class NormalItem implements ItemBehavior {
+    updateQuality(item: Item): void {
+        item.sellIn--;
+        let degrade = item.sellIn < 0 ? 2 : 1;
+        if (item.quality > 0) item.quality -= degrade;
+    }
+}
+
+class GoodWineItem implements ItemBehavior {
+    updateQuality(item: Item): void {
+        item.sellIn--;
+        let increase = item.sellIn < 0 ? 2 : 1;
+        if (item.quality < 50) item.quality += increase;
+    }
+}
+
+class BackstagePassesItem implements ItemBehavior {
+    updateQuality(item: Item): void {
+        item.sellIn--;
+        if (item.sellIn < 0) {
+            item.quality = 0;
+        }
+        else {
+            if (item.quality < 50) item.quality++;
+            if (item.sellIn < 10 && item.quality < 50) item.quality++;
+            if (item.sellIn < 5 && item.quality < 50) item.quality++;
+        }
+    }
+}
+
+class LegendaryItem implements ItemBehavior {
+    updateQuality(item: Item): void {
+        item.quality = 80;
+    }
+}
+
+const ITEMS_CATEGORIES: { [key: string]: ItemBehavior } = {
+    'Good Wine': new GoodWineItem(),
+    'Backstage passes for Re:Factor': new BackstagePassesItem(),
+    'Backstage passes for HAXX': new BackstagePassesItem(),
+    'B-DAWG Keychain': new LegendaryItem(),
+};
 
 export class GildedTros {
 
@@ -6,6 +53,15 @@ export class GildedTros {
 
     }
 
+    updateQuality(): void {
+        this.items.forEach((item) => {
+            const strategy = ITEMS_CATEGORIES[item.name] || new NormalItem();
+            strategy.updateQuality(item);
+        });
+
+    }
+    
+    /*
     public updateQuality(): void {
         for (let i = 0; i < this.items.length; i++) {
             // Decrease quality for normal items
@@ -70,7 +126,7 @@ export class GildedTros {
                 }
             }
         }
-    }
+    }*/
 
 }
 
