@@ -34,11 +34,22 @@ class LegendaryItem {
   }
 }
 
+class SmellyItem {
+  updateQuality(item) {
+    item.sellIn--;
+    let degrade = item.sellIn < 0 ? 4 : 2;
+    if(item.quality > 0) item.quality -= degrade;
+  }
+}
+
 const ITEMS_CATEGORIES = {
   'Good Wine': new GoodWineItem(),
   'Backstage passes for Re:Factor': new BackstagePassesItem(),
   'Backstage passes for HAXX': new BackstagePassesItem(),
   'B-DAWG Keychain': new LegendaryItem(),
+  'Duplicate Code': new SmellyItem(),
+  'Long Methods': new SmellyItem(),
+  'Ugly Variable Names': new SmellyItem(),
 };
 
 export class GildedTros {

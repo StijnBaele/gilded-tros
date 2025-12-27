@@ -40,11 +40,22 @@ class LegendaryItem implements ItemBehavior {
     }
 }
 
+class SmellyItem implements ItemBehavior {
+    updateQuality(item: Item): void {
+        item.sellIn--;
+        let degrade = item.sellIn < 0 ? 4 : 2;
+        if (item.quality > 0) item.quality -= degrade;
+    }
+}
+
 const ITEMS_CATEGORIES: { [key: string]: ItemBehavior } = {
     'Good Wine': new GoodWineItem(),
     'Backstage passes for Re:Factor': new BackstagePassesItem(),
     'Backstage passes for HAXX': new BackstagePassesItem(),
     'B-DAWG Keychain': new LegendaryItem(),
+    'Duplicate Code': new SmellyItem(),
+    'Long Methods': new SmellyItem(),
+    'Ugly Variable Names': new SmellyItem(),
 };
 
 export class GildedTros {
@@ -60,7 +71,7 @@ export class GildedTros {
         });
 
     }
-    
+
     /*
     public updateQuality(): void {
         for (let i = 0; i < this.items.length; i++) {
